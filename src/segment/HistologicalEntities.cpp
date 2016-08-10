@@ -14,12 +14,21 @@
 #include "float.h"
 #include "Logger.h"
 #include "ConnComponents.h"
+#include <string>
 
 namespace nscale {
 
 using namespace cv;
 
+void HistologicalEntities::flushMat(Mat m) {
+	imwrite("mat.jpg", m);
+}
 
+int HistologicalEntities::showMat(Mat m) {
+	namedWindow("window", WINDOW_AUTOSIZE);
+	imshow("window", m);
+	return 0;
+}
 
 Mat HistologicalEntities::getRBC(const Mat& img,  double T1, double T2,
 		::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler) {
@@ -663,5 +672,78 @@ int HistologicalEntities::segmentNuclei(const Mat& img, Mat& output, unsigned ch
 
 }
 
+/***********************************************************/
+/****************** Staged Segment Nuclei ******************/
+/***********************************************************/
+
+int HistologicalEntities::segmentNucleiStg1(const Mat& img, unsigned char blue, unsigned char green, unsigned char red, double T1, double T2, unsigned char G1, int minSize, int maxSize, unsigned char G2,  int fillHolesConnectivity, int reconConnectivity,
+		::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler, Mat* seg_open) {
+	// image in BGR format
+	if (!img.data) return ::nscale::HistologicalEntities::INVALID_IMAGE;
+
+	if (logger) logger->logT0("start");
+	if (iresHandler) iresHandler->saveIntermediate(img, 0);
+
+	Mat seg_norbc;
+	int findCandidateResult = ::nscale::HistologicalEntities::plFindNucleusCandidates(img, seg_norbc, blue, green, red, T1, T2, G1, minSize, maxSize, G2,  fillHolesConnectivity, reconConnectivity, logger, iresHandler);
+	if (findCandidateResult != ::nscale::HistologicalEntities::CONTINUE) {
+		return findCandidateResult;
+	}
+
+	Mat seg_nohole = ::nscale::imfillHoles<unsigned char>(seg_norbc, true, 4);
+	if (logger) logger->logTimeSinceLastLog("fillHoles2");
+	if (iresHandler) iresHandler->saveIntermediate(seg_nohole, 12);
+
+	Mat disk3 = getStructuringElement(MORPH_ELLIPSE, Size(3,3));
+	*seg_open = ::nscale::morphOpen<unsigned char>(seg_nohole, disk3);
+	if (logger) logger->logTimeSinceLastLog("openBlobs");
+	if (iresHandler) iresHandler->saveIntermediate(*seg_open, 13);
+}
+
+int HistologicalEntities::segmentNucleiStg2(const Mat* img, int minSizePl, int watershedConnectivity, Mat* seg_open, Mat* seg_nonoverlap, 
+		::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler) {
+	int sepResult = ::nscale::HistologicalEntities::plSeparateNuclei(*img, *seg_open, *seg_nonoverlap, minSizePl, watershedConnectivity, logger, iresHandler);
+	if (sepResult != ::nscale::HistologicalEntities::CONTINUE) {
+		return sepResult;
+	}
+}
+
+
+int HistologicalEntities::segmentNucleiStg3(int minSizeSeg, int maxSizeSeg, int fillHolesConnectivity, Mat* seg_nonoverlap, 
+		Mat* output, ::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler) {
+
+	int compcount2;
+	// MASK approach
+	Mat seg = ::nscale::bwareaopen2(*seg_nonoverlap, false, true, minSizeSeg, maxSizeSeg, 4, compcount2);
+	//Mat seg = ::nscale::bwareaopen2(seg_nonoverlap, false, true, 21, 1000, 4, compcount2);
+
+	if (logger) logger->logTimeSinceLastLog("20To1000");
+	if (compcount2 == 0) {
+		return ::nscale::HistologicalEntities::NO_CANDIDATES_LEFT;
+	}
+	if (iresHandler) iresHandler->saveIntermediate(seg, 23);
+
+	// MASK approach
+	*output = ::nscale::imfillHoles<unsigned char>(seg, true, fillHolesConnectivity);
+	// LABEL approach - upstream erode does not support 32S
+	if (logger) logger->logTimeSinceLastLog("fillHolesLast");
+
+//	if (logger) logger->endSession();
+
+///	// MASK approach
+///	output = nscale::bwlabel2(final, 8, true);
+///	final.release();
+///
+///	if (logger) logger->logTimeSinceLastLog("bwlabel2");
+///
+///	::nscale::ConnComponents cc;
+///	bbox = cc.boundingBox(output.cols, output.rows, (int *)output.data, 0, compcount);
+/////	printf(" number of bounding boxes: %d\n", compcount);
+/////	printf(" bbox: %d, %d, %d, %d, %d\n", bbox[0], bbox[1], bbox[2], bbox[3], bbox[4]);
+///
+///	if (logger) logger->logTimeSinceLastLog("bounding_box");
+	return ::nscale::HistologicalEntities::SUCCESS;
+
+}
 
 }

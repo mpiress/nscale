@@ -13,6 +13,7 @@
 #include "opencv2/opencv.hpp"
 #include "opencv2/gpu/gpu.hpp"
 #include <string.h>
+#include <string>
 
 
 #ifdef _MSC_VER
@@ -27,6 +28,9 @@ namespace nscale {
 class DllExport HistologicalEntities {
 
 public:
+
+	static void flushMat(cv::Mat m);
+	static int showMat(cv::Mat m);
 
 
 	static const int BACKGROUND = 1;
@@ -56,6 +60,13 @@ public:
 
 	static int segmentNuclei(const cv::Mat& img, cv::Mat& mask, unsigned char blue=220, unsigned char green=220, unsigned char red=220, double T1=5.0, double T2=4.0, unsigned char G1 = 80, int minSize=11, int maxSize=1000, unsigned char G2 = 45, int minSizePl=30, int minSizeSeg=21, int maxSizeSeg=1000, int fillHolesConnectivity=4, int reconConnectivity=8, int watershedConnectivity=8,
 			::cciutils::SimpleCSVLogger *logger = NULL, ::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
+
+	static int segmentNucleiStg1(const cv::Mat& img, unsigned char blue, unsigned char green, unsigned char red, double T1, double T2, unsigned char G1, int minSize, int maxSize, unsigned char G2,  int fillHolesConnectivity, int reconConnectivity,
+			::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler, cv::Mat* seg_open);
+	static int segmentNucleiStg2(const cv::Mat* img, int minSizePl, int watershedConnectivity, cv::Mat* seg_open, cv::Mat* seg_nonoverlap, 
+			::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler);
+	static int segmentNucleiStg3(int minSizeSeg, int maxSizeSeg, int fillHolesConnectivity, cv::Mat* seg_nonoverlap, cv::Mat* output, 
+			::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler);
 
 	// the following are specific to the task based implementation for HPDC paper.  The pipeline is refactoring into this form so we're maintaining one set of code.
 	static int plFindNucleusCandidates(const cv::Mat& img, cv::Mat& seg_norbc, unsigned char blue=220, unsigned char green=220, unsigned char red=220, double T1=5.0, double T2=4.0, unsigned char G1 = 80, int minSize=11, int maxSize=1000, unsigned char G2 = 45, int fillHolesConnectivity=4, int reconConnectivity=8,
