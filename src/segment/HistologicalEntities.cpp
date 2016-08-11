@@ -676,8 +676,9 @@ int HistologicalEntities::segmentNuclei(const Mat& img, Mat& output, unsigned ch
 /****************** Staged Segment Nuclei ******************/
 /***********************************************************/
 
-int HistologicalEntities::segmentNucleiStg1(const Mat& img, unsigned char blue, unsigned char green, unsigned char red, double T1, double T2, unsigned char G1, int minSize, int maxSize, unsigned char G2,  int fillHolesConnectivity, int reconConnectivity,
-		::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler, Mat* seg_open) {
+int HistologicalEntities::segmentNucleiStg1(const Mat& img, unsigned char blue, unsigned char green, unsigned char red, 
+		double T1, double T2, unsigned char G1, int minSize, int maxSize, unsigned char G2,  int fillHolesConnectivity,
+		int reconConnectivity, Mat* seg_open, ::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler) {
 	// image in BGR format
 	if (!img.data) return ::nscale::HistologicalEntities::INVALID_IMAGE;
 
@@ -700,9 +701,9 @@ int HistologicalEntities::segmentNucleiStg1(const Mat& img, unsigned char blue, 
 	if (iresHandler) iresHandler->saveIntermediate(*seg_open, 13);
 }
 
-int HistologicalEntities::segmentNucleiStg2(const Mat* img, int minSizePl, int watershedConnectivity, Mat* seg_open, Mat* seg_nonoverlap, 
-		::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler) {
-	int sepResult = ::nscale::HistologicalEntities::plSeparateNuclei(*img, *seg_open, *seg_nonoverlap, minSizePl, watershedConnectivity, logger, iresHandler);
+int HistologicalEntities::segmentNucleiStg2(const Mat& img, int minSizePl, int watershedConnectivity, Mat* seg_open, 
+		Mat* seg_nonoverlap, ::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler) {
+	int sepResult = ::nscale::HistologicalEntities::plSeparateNuclei(img, *seg_open, *seg_nonoverlap, minSizePl, watershedConnectivity, logger, iresHandler);
 	if (sepResult != ::nscale::HistologicalEntities::CONTINUE) {
 		return sepResult;
 	}
