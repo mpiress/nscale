@@ -906,17 +906,17 @@ int HistologicalEntities::segmentNucleiStg5(unsigned char G2, Mat* diffIm, Mat* 
 	if (iresHandler) iresHandler->saveIntermediate(*seg_open, 13);
 }
 
-int HistologicalEntities::segmentNucleiStg6(const Mat *img, int minSizePl, int watershedConnectivity, Mat* seg_open, 
+int HistologicalEntities::segmentNucleiStg6(const Mat& img, int minSizePl, int watershedConnectivity, Mat* seg_open, 
 		Mat* seg_nonoverlap, ::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler) {
-	int sepResult = ::nscale::HistologicalEntities::plSeparateNuclei(*img, *seg_open, *seg_nonoverlap, minSizePl, 
+	int sepResult = ::nscale::HistologicalEntities::plSeparateNuclei(img, *seg_open, *seg_nonoverlap, minSizePl, 
 		watershedConnectivity, logger, iresHandler);
 	if (sepResult != ::nscale::HistologicalEntities::CONTINUE) {
 		return sepResult;
 	}
 }
 
-int HistologicalEntities::segmentNucleiStg7(int minSizeSeg, int maxSizeSeg, int fillHolesConnectivity, Mat* seg_nonoverlap, 
-		Mat* output, ::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler) {
+int HistologicalEntities::segmentNucleiStg7(cv::Mat* output, int minSizeSeg, int maxSizeSeg, int fillHolesConnectivity, 
+		Mat* seg_nonoverlap, ::cciutils::SimpleCSVLogger *logger, ::cciutils::cv::IntermediateResultHandler *iresHandler) {
 
 	int compcount2;
 	// MASK approach

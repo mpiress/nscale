@@ -61,8 +61,8 @@ public:
 	static int segmentNuclei(const cv::Mat& img, cv::Mat& mask, unsigned char blue=220, unsigned char green=220, unsigned char red=220, double T1=5.0, double T2=4.0, unsigned char G1 = 80, int minSize=11, int maxSize=1000, unsigned char G2 = 45, int minSizePl=30, int minSizeSeg=21, int maxSizeSeg=1000, int fillHolesConnectivity=4, int reconConnectivity=8, int watershedConnectivity=8,
 			::cciutils::SimpleCSVLogger *logger = NULL, ::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
 
-	static int segmentNucleiStg1(const cv::Mat& img, unsigned char blue, unsigned char green, unsigned char red, double T1, double T2,
-			std::vector<cv::Mat> *bgr, cv::Mat* rbc, ::cciutils::SimpleCSVLogger *logger = NULL, 
+	static int segmentNucleiStg1(const cv::Mat& img, unsigned char blue, unsigned char green, unsigned char red, double T1, 
+			double T2, std::vector<cv::Mat> *bgr, cv::Mat* rbc, ::cciutils::SimpleCSVLogger *logger = NULL, 
 			::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
 	static int segmentNucleiStg2(int reconConnectivity, std::vector<cv::Mat> *bgr, cv::Mat* rc, cv::Mat* rc_recon, cv::Mat *rc_open,
 			::cciutils::SimpleCSVLogger *logger = NULL, ::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
@@ -73,20 +73,12 @@ public:
 			::cciutils::SimpleCSVLogger *logger = NULL, ::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
 	static int segmentNucleiStg5(unsigned char G2, cv::Mat* diffIm, cv::Mat* bw1_t, cv::Mat* rbc, cv::Mat* seg_open, 
 			::cciutils::SimpleCSVLogger *logger = NULL, ::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
-	static int segmentNucleiStg6(const cv::Mat *img, int minSizePl, int watershedConnectivity, cv::Mat* seg_open, 
+	static int segmentNucleiStg6(const cv::Mat& img, int minSizePl, int watershedConnectivity, cv::Mat* seg_open, 
 			cv::Mat* seg_nonoverlap, ::cciutils::SimpleCSVLogger *logger = NULL, 
 			::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
-	static int segmentNucleiStg7(int minSizeSeg, int maxSizeSeg, int fillHolesConnectivity, cv::Mat* seg_nonoverlap, 
-			cv::Mat* output, ::cciutils::SimpleCSVLogger *logger = NULL, 
+	static int segmentNucleiStg7(cv::Mat* output, int minSizeSeg, int maxSizeSeg, int fillHolesConnectivity, cv::Mat* seg_nonoverlap, 
+			::cciutils::SimpleCSVLogger *logger = NULL, 
 			::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
-
-
-	// static int segmentNucleiStg1(const cv::Mat& img, unsigned char blue, unsigned char green, unsigned char red, double T1, double T2, unsigned char G1, int minSize, int maxSize, unsigned char G2,  int fillHolesConnectivity, int reconConnectivity, cv::Mat* seg_open,
-	// 		::cciutils::SimpleCSVLogger *logger = NULL, ::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
-	// static int segmentNucleiStg2(const cv::Mat& img, int minSizePl, int watershedConnectivity, cv::Mat* seg_open, cv::Mat* seg_nonoverlap, 
-	// 		::cciutils::SimpleCSVLogger *logger = NULL, ::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
-	// static int segmentNucleiStg3(int minSizeSeg, int maxSizeSeg, int fillHolesConnectivity, cv::Mat* seg_nonoverlap, cv::Mat* output, 
-	// 		::cciutils::SimpleCSVLogger *logger = NULL, ::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
 
 	// the following are specific to the task based implementation for HPDC paper.  The pipeline is refactoring into this form so we're maintaining one set of code.
 	static int plFindNucleusCandidates(const cv::Mat& img, cv::Mat& seg_norbc, unsigned char blue=220, unsigned char green=220, unsigned char red=220, double T1=5.0, double T2=4.0, unsigned char G1 = 80, int minSize=11, int maxSize=1000, unsigned char G2 = 45, int fillHolesConnectivity=4, int reconConnectivity=8,
