@@ -751,7 +751,7 @@ int HistologicalEntities::segmentNucleiStg2(int reconConnectivity, std::vector<M
 //	std::cout << "RBC detection: " << t1-t0 << std::endl; 
 
 
-	rc_open = new Mat(rc->size(), rc->type());
+	// rc_open = new Mat(rc->size(), rc->type());
 	//Mat disk19 = getStructuringElement(MORPH_ELLIPSE, Size(19,19));
 	// structuring element is not the same between matlab and opencv.  using the one from matlab explicitly....
 	// (for 4, 6, and 8 connected, they are approximations).
