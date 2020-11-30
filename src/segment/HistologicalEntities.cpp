@@ -1001,3 +1001,40 @@ int HistologicalEntities::segmentNucleiStg7(
 }
 
 }  // namespace nscale
+
+#ifdef WITH_PYTHON_PORT
+#include <Python.h>
+
+static PyObject *segmentNucleiStg1Py(PyObject *self, PyObject *args) {
+    // Parse arguments
+    // cv::Mat &img;
+    unsigned char blue;
+    unsigned char green;
+    unsigned char red;
+    double T1;
+    double T2;
+    std::vector<cv::Mat> *bgr;
+    cv::Mat *rbc;
+
+    if (!PyArg_ParseTuple(args, "bbbdd", &blue, &green, &red, &T1, &T2)) {
+        return NULL;
+    }
+
+    std::cout << "Read parameters " << blue << ", " << green << ", " << red
+              << ", " << T1 << ", " << T2 << ", "
+              << " and will return zero\n";
+
+    return PyLong_FromLong(0);
+}
+
+static PyMethodDef FputsMethods[] = {
+    {"segmentNucleiStg1", segmentNucleiStg1Py, METH_VARARGS,
+     "segmentNucleiStg1 C function"},
+    {NULL, NULL, 0, NULL}};
+
+static struct PyModuleDef fputsmodule = {PyModuleDef_HEAD_INIT, "nscale",
+                                         "nscale C module", -1, FputsMethods};
+
+PyMODINIT_FUNC PyInit_fputs(void) { return PyModule_Create(&fputsmodule); }
+
+#endif
