@@ -122,6 +122,9 @@ class DllExport HistologicalEntities {
         ::cciutils::SimpleCSVLogger *logger = NULL,
         ::cciutils::cv::IntermediateResultHandler *iresHandler = NULL);
 
+    static void helloWorld(unsigned char blue, unsigned char green,
+        unsigned char red, double T1, double T2);
+
     // the following are specific to the task based implementation for HPDC
     // paper.  The pipeline is refactoring into this form so we're maintaining
     // one set of code.

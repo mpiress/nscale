@@ -140,3 +140,4 @@ option (BUILD_EXAMPLE_APPLICATIONS "Inform whether sample applications should be
 
 add_subdirectory(src)
 add_subdirectory(scripts)
+

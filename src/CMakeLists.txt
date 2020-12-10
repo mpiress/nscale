@@ -42,11 +42,12 @@ endif(NS_EXECENGINE)
 set(NS_NORMALIZATION ON CACHE BOOL "Building Normalization")
 set(NS_FEATURES ON CACHE BOOL "Building Features and FeaturesCPU")
 set(NS_SEGMENT ON CACHE BOOL "Building Segmentation")
+set(NS_WRAPPERS ON CACHE BOOL "Building C/C++ to Python Wrappers")
 set(NS_PIPELINE OFF CACHE BOOL "Building Pipeline, which requires HDF5 1.8.7")
 set(NS_AdvIO OFF CACHE BOOL "Building experimental code for Advanced IO studies")
 #set(NS_Tasks OFF CACHE BOOL "Building experimental code for Task Centric Pipeline")
 
-if(NS_FEATURES OR NS_SEGMENT OR NS_NORMALIZATION)
+if(NS_FEATURES OR NS_SEGMENT OR NS_NORMALIZATION OR NS_WRAPPERS)
     #### OpenCV
 	# find_path(OpenCV_CMAKE_DIR NAMES FindOpenCV.cmake OpenCVConfig.cmake
 	#  	HINTS ${CMAKE_MODULE_PATH} ENV OPENCV_HOME
@@ -74,7 +75,7 @@ if(NS_FEATURES OR NS_SEGMENT OR NS_NORMALIZATION)
     	set(CUDA_FOUND 0)
     endif(USE_CUDA)
     
-endif(NS_FEATURES OR NS_SEGMENT OR NS_NORMALIZATION)
+endif(NS_FEATURES OR NS_SEGMENT OR NS_NORMALIZATION OR NS_WRAPPERS)
 
 if (NS_NORMALIZATION)
     set(NS_SEGMENT OFF CACHE BOOL "Building Segmentation")
@@ -86,11 +87,13 @@ if (NS_FEATURES)
     add_subdirectory(features)
 endif(NS_FEATURES)
     
-
 if (NS_SEGMENT)
     add_subdirectory(segment)
 endif(NS_SEGMENT)
 
+#if (NS_WRAPPERS)
+#    add_subdirectory(wrappers)
+#endif(NS_WRAPPERS)
 
 
 ### set to compile the pipeline directory

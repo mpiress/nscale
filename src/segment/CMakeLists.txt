@@ -7,7 +7,7 @@ set(Segmentation_VERSION_MINOR 0)
 # Source files used by Segmentation
 set(libsrcs
     HistologicalEntities.cpp MorphologicOperations.cpp PixelOperations.cpp
-    NeighborOperations.cpp ConnComponents.cpp UtilsCVImageIO.cpp)
+    NeighborOperations.cpp ConnComponents.cpp UtilsCVImageIO.cpp SegmentWrapper.cpp)
 set(gpulibsrcs HistologicalEntitiesGPU.cpp MorphologicOperationsGPU.cpp
                PixelOperationsGPU.cpp NeighborOperationsGPU.cpp)
 set(cudalibsrcs
